@@ -46,3 +46,6 @@ _deps
 
 # Folders
 build/
+
+# Bin
+Lunasm
