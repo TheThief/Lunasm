@@ -49,3 +49,6 @@ build/
 
 # Bin
 Lunasm
+
+# Cache 
+.cache/
