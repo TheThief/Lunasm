@@ -8,4 +8,4 @@ for folder in $(echo $CHECK_FOLDERS | sed "s/,/ /g"); do
   fi
 done
 
-cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -S . -B build/
+cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -S . -B build -GNinja
