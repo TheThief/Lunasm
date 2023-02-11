@@ -6,6 +6,7 @@
 #include <cstddef>
 
 #include "fmt/core.h"
+#include "cxxopts.hpp"
 
 namespace Lunasm {
 
@@ -72,12 +73,21 @@ namespace Lunasm {
   };
 }
 
-int main()
+int main(int argc, char* argv[])
 {
-  std::string code = "12.345";
+  cxxopts::Options options("Lunasm", "Assembly language for the Luna16 fantasy console.");
 
-  auto l = Lunasm::Lexer(code);
-  l.tokenizer();
+  options.add_options()
+    ("h,help", "Show usage menu") 
+  ;
+
+  auto result = options.parse(argc, argv);
+
+  if (result.count("help"))
+  {
+    fmt::print("{}", options.help());
+    std::exit(0);
+  }
 
   return EXIT_SUCCESS;
 }
