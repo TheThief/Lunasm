@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin)
 
 add_subdirectory(${CMAKE_SOURCE_DIR}/external/fmtlib/)
+add_subdirectory(${CMAKE_SOURCE_DIR}/external/cxxopts)
 
 add_executable(${PROJECT_NAME} 
 	src/main.cpp
@@ -13,10 +14,12 @@ add_executable(${PROJECT_NAME}
 
 target_include_directories(${PROJECT_NAME} 
 	PUBLIC external/fmtlib/include
+	PUBLIC external/cxxopts/include
 )
 
 target_link_directories(${PROJECT_NAME}
 	PRIVATE external/fmtlib
+	PRIVATE external/cxxopts
 )
 
-target_link_libraries(${PROJECT_NAME} fmt)
+target_link_libraries(${PROJECT_NAME} fmt cxxopts)
