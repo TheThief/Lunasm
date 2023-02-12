@@ -26,7 +26,7 @@ int main(int argc, char* argv[])
     std::exit(0);
   }
 
-  auto l = Lunasm::Lexer("ldi r1, $01");
+  auto l = Lunasm::Lexer("lda r1, [r2 + $1234]");
   l.Tokenizer();
 
   return EXIT_SUCCESS;
