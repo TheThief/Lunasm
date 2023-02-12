@@ -55,7 +55,7 @@ namespace Lunasm {
         
         do { 
           step(); 
-        } while (std::isalnum(current_char()));
+        } while (!is_empty() && std::isalnum(current_char()));
 
         std::size_t end = m_index - start;
         std::string text = m_source_code.substr(start, end);
@@ -64,7 +64,7 @@ namespace Lunasm {
       }
 
       else if (std::isspace(current_char()))
-        step();
+        skip();
       
       else if (current_char() == ',')
       {
@@ -77,13 +77,11 @@ namespace Lunasm {
         auto next = peek().value();
         
         if (!std::isdigit(next))
-        {
           fmt::print("Exception missing immediate after $");
-        }
 
-        step();
+        skip();
         std::size_t start = m_index;
-        step();
+        skip();
 
         while (!is_empty() && std::isdigit(current_char()))
           step();
