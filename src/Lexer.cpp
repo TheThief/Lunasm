@@ -20,7 +20,7 @@ namespace Lunasm {
       m_index++;
   }
 
-	void Lexer::skip(std::size_t n = 1)
+  void Lexer::skip(std::size_t n = 1)
   {
     m_index += n;
   }
