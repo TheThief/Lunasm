@@ -12,7 +12,7 @@ namespace Lunasm {
 		char eat();
 		void step(void);
 		char current_char(void) const;
-		std::optional<char> peek(std::size_t pos = 1);
+		std::optional<char> peek(std::size_t pos);
 	public:
 		void Tokenizer();
 	private:
