@@ -14,6 +14,11 @@ namespace Lunasm {
     return m_source_code.at(m_index++);
   }
 
+  bool Lexer::is_empty() const 
+  {
+    return m_index >= m_source_code.length();
+  }
+
   void Lexer::step(void)
   {
     if (m_index < m_source_code.length())
@@ -60,6 +65,28 @@ namespace Lunasm {
       {
         fmt::print("Token: ,\n");
         step();
+      }
+
+      else if (current_char() == '$')
+      {
+        auto next = peek().value();
+        
+        if (!std::isdigit(next))
+        {
+          fmt::print("Exception missing immediate after $");
+        }
+
+        step();
+        std::size_t start = m_index;
+        step();
+
+        while (!is_empty() && std::isdigit(current_char()))
+          step();
+
+        std::size_t end = m_index - start;
+        std::string text = m_source_code.substr(start, end);
+
+        fmt::print("Token: {}\n", text);
       }
 
       else 
