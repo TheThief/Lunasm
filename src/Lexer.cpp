@@ -25,7 +25,7 @@ namespace Lunasm {
     return m_source_code.at(m_index);
   }
 
-  std::optional<char> Lexer::peek(std::size_t pos)
+  std::optional<char> Lexer::peek(std::size_t pos = 1)
   {
     if ((m_index + pos) < m_source_code.length())
       return m_source_code.at(m_index);
@@ -40,16 +40,27 @@ namespace Lunasm {
       if (std::isalpha(current_char()))
       {
         std::size_t start = m_index; 
-        step(); 
         
-        while (std::isalnum(current_char()))      
-          step();
-       
-        std::size_t end = m_index;
+        do { 
+          step(); 
+        } while (std::isalnum(current_char()));
+
+        std::size_t end = m_index - start;
         std::string text = m_source_code.substr(start, end);
 
         fmt::print("Token: {}\n", text);
       }
+
+      else if (std::isspace(current_char()))
+        step();
+      
+      else if (current_char() == ',')
+      {
+        fmt::print("Token: ,\n");
+        step();
+      }
+      else 
+        step();    
     }
   }
 }
