@@ -6,10 +6,17 @@ set(CMAKE_CXX_STANDARD 17)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin)
 
 add_subdirectory(${CMAKE_SOURCE_DIR}/external/fmtlib/)
-add_subdirectory(${CMAKE_SOURCE_DIR}/external/cxxopts)
+add_subdirectory(${CMAKE_SOURCE_DIR}/external/cxxopts/)
+
+set(SOURCE_DIR ${PROJECT_SOURCE_DIR}/src/)
+
+include_directories(
+	${PROJECT_SOURCE_DIR}/src/include/Lexer
+)
 
 add_executable(${PROJECT_NAME} 
-	src/main.cpp
+	${SOURCE_DIR}/Lexer.cpp
+	${SOURCE_DIR}/main.cpp
 )
 
 target_include_directories(${PROJECT_NAME} 
