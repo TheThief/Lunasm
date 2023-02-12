@@ -27,8 +27,10 @@ namespace Lunasm {
 
   std::optional<char> Lexer::peek(std::size_t pos = 1)
   {
-    if ((m_index + pos) < m_source_code.length())
-      return m_source_code.at(m_index);
+    auto index = m_index + pos; 
+
+    if (index < m_source_code.length())
+      return m_source_code.at(index);
 
     return {};
   }
@@ -59,6 +61,7 @@ namespace Lunasm {
         fmt::print("Token: ,\n");
         step();
       }
+
       else 
         step();    
     }
