@@ -11,6 +11,7 @@ namespace Lunasm {
 	public:
 		char eat();
 		void step(void);
+		void skip(std::size_t n);
 		bool is_empty() const ;
 		char current_char(void) const;
 		std::optional<char> peek(std::size_t pos);
