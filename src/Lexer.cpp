@@ -1,8 +1,7 @@
-#include "fmt/core.h"
-
-#include "include/Lexer/Lexer.hpp"
 #include <cctype>
-#include <exception>
+
+#include "fmt/core.h"
+#include "include/Lexer/Lexer.hpp"
 
 namespace Lunasm {
 
@@ -36,7 +35,7 @@ namespace Lunasm {
 
   void Lexer::Tokenizer(void)
   {
-    while (m_index <= m_source_code.length())
+    while (m_index < m_source_code.length())
     {
       if (std::isalpha(current_char()))
       {
