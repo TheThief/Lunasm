@@ -14,15 +14,20 @@ namespace Lunasm {
     return m_source_code.at(m_index++);
   }
 
-  bool Lexer::is_empty() const 
-  {
-    return m_index >= m_source_code.length();
-  }
-
   void Lexer::step(void)
   {
     if (m_index < m_source_code.length())
       m_index++;
+  }
+
+	void Lexer::skip(std::size_t n = 1)
+  {
+    m_index += n;
+  }
+
+  bool Lexer::is_empty() const 
+  {
+    return m_index >= m_source_code.length();
   }
 
   char Lexer::current_char(void) const
