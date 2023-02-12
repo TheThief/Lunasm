@@ -108,13 +108,13 @@ namespace Lunasm {
       {
         auto next = peek().value();
         
-        if (!std::isdigit(next))
+        if (!std::isxdigit(next))
           fmt::print("Exception missing immediate after $");
 
         skip(); // Skiping '$' character
         std::size_t start = m_index;
 
-        while (!is_empty() && std::isdigit(current_char()))
+        while (!is_empty() && std::isxdigit(current_char()))
           step();
 
         std::size_t end = m_index - start;
