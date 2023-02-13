@@ -1,4 +1,5 @@
 #include <cctype>
+#include <string_view>
 
 #include "fmt/core.h"
 #include "include/Lexer/Lexer.hpp"
@@ -57,14 +58,19 @@ namespace Lunasm {
           step();
 
         std::size_t end = m_index - start;
-        std::string text = m_source_code.substr(start, end);
+        std::string_view text(m_source_code.c_str() + start, end);
 
         auto token = fmt::format("kind: instruction, line: {} col: {} text: {}", m_line, m_index, text);
         fmt::print("Token {{ {} }}\n", token);
       }
 
       else if (std::isspace(current_char()))
+      {
+        if (current_char() == '\n')
+          m_line++;
+
         skip();
+      }
       
       else if (current_char() == ',')
       {
@@ -98,28 +104,19 @@ namespace Lunasm {
         fmt::print("Token {{ {} }}\n", token);
       }
 
-      else if(current_char() == '\n')
-      {
-        step();
-        m_line++;
-      }
-
       else if (current_char() == '$')
       {
-        auto next = peek().value();
-        
-        if (!std::isxdigit(next))
+        if (!std::isxdigit(peek().value()))
           fmt::print("Exception missing immediate after $");
 
-        skip(); // Skiping '$' character
+        skip(); // Skipping '$' character
         std::size_t start = m_index;
 
         while (!is_empty() && std::isxdigit(current_char()))
           step();
 
         std::size_t end = m_index - start;
-        std::string text = m_source_code.substr(start, end);
-
+        std::string_view text(m_source_code.c_str() + start, end);
 
         auto token = fmt::format("kind: immediate, line: {} col: {} text: {}", m_line, m_index, text);
         fmt::print("Token {{ {} }}\n", token);
@@ -128,5 +125,8 @@ namespace Lunasm {
       else 
         step();    
     }
+    
+    auto token = fmt::format("kind: eof, line: {} col: {} text: EOF", m_line, m_index);
+    fmt::print("Token {{ {} }}\n", token);
   }
 }
