@@ -8,7 +8,7 @@
 #include "fmt/core.h"
 #include "cxxopts.hpp"
 
-#include "include/Lexer/Lexer.hpp"
+#include "Lexer.hpp"
 
 int main(int argc, char* argv[])
 {
@@ -25,8 +25,8 @@ int main(int argc, char* argv[])
     fmt::print("{}", options.help());
     std::exit(0);
   }
-
-  auto l = Lunasm::Lexer("lda r1, [r2 + $ABCD]");
+  
+  auto l = Lunasm::Lexer("ldi r0, $05");
   l.Tokenizer();
 
   return EXIT_SUCCESS;
