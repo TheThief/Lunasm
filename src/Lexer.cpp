@@ -1,27 +1,34 @@
 #include <cctype>
 #include <string_view>
-
-#include "fmt/core.h"
-#include "include/Lexer/Lexer.hpp"
-
-#include <vector>
-
-const std::vector<std::string> instructions = {
-  "ldi", 
-};
-
-const std::vector<std::string> registers = {
-  "r0", "r1"
-};
-
 #include <unordered_map>
 
+#include "fmt/core.h"
+
+#include "Lexer.hpp"
+
+#include <fmt/ostream.h>
+#include <iomanip>
+
+const std::unordered_map<std::string_view, std::string> Keywords = {
+
+  // Instructions
+  {"ldi", "instruction"},
+  {"cmp", "instruction"},
+  {"jne", "instruction"},
+
+  // Registers
+  {"r0", "register"},
+  {"r1", "register"},
+};
+
+//              current_char, TokenKind
 std::unordered_map<char, std::string> LiteralTokens = {
-  {'[', "Open brackets"},
-  {']', "Open brackets"},
-  {'+', "Plus sign"},
-  {'-', "Minus sign"},
-  {',', "Comma"},
+  {'[', "]"},
+  {']', "["},
+  {'+', "+"},
+  {'-', "-"},
+  {',', ","},
+  {':', ":"},
 };
 
 namespace Lunasm {
@@ -81,16 +88,18 @@ namespace Lunasm {
         std::string_view text(m_source_code.c_str() + start, end);
         
         std::string kind;
-        for (const auto &inst : instructions)
-          if (inst == text)
-           kind = "instruction"; 
 
-        for (const auto &reg : registers)
-          if (reg == text)
-            kind = "register";
+        // is_keyword(current_char())
+        // is_register(current_char())
+        if (Keywords.find(text) != Keywords.end())
+          kind = Keywords.at(text);
+        else
+        {
+          text = "ERR";
+          kind = "invalid";
+        }
         
-        auto token = fmt::format("kind: {}, line: {} col: {} text: {}", kind, m_line, m_index, text);
-        fmt::print("Token {{ {} }}\n", token);
+        fmt::print("Token( T: \"{:10}\" Kind: <{}>, Line: {}, Offset: {:02d} )\n", std::quoted(text), kind, m_line, m_index);
       }
 
       else if (std::isspace(current_char()))
@@ -115,24 +124,20 @@ namespace Lunasm {
         std::size_t end = m_index - start;
         std::string_view text(m_source_code.c_str() + start, end);
 
-        auto token = fmt::format("kind: immediate, line: {} col: {} text: {}", m_line, m_index, text);
-        fmt::print("Token {{ {} }}\n", token);
+        fmt::print("Token( T: \"{}\"\t Kind: <{}>,\t Line: {},\t Offset: {:02d} )\n", text, "immediate", m_line, m_index);
       }
 
       else if (LiteralTokens.find(current_char()) != LiteralTokens.end())
       {
         auto text = LiteralTokens.at(current_char());
+        fmt::print("Token( T: \"{}\"\t Kind: <{}>,\t Line: {},\t Offset: {:02d} )\n", text, "punctuation", m_line, m_index);
         step();
-
-        auto token = fmt::format("kind: punctuation, line: {} col: {} text: {}", m_line, m_index, text);
-        fmt::print("Token {{ {} }}\n", token);
       }
 
       else 
         step();    
     }
     
-    auto token = fmt::format("kind: eof, line: {} col: {} text: EOF", m_line, m_index);
-    fmt::print("Token {{ {} }}\n", token);
+    fmt::print("Token( T: \"{}\"\t Kind: <{}>,\t Line: {},\t Offset: {:02d} )\n", "EOF", "punctuation", m_line, m_index);
   }
 }
