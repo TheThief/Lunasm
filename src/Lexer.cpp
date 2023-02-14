@@ -4,6 +4,26 @@
 #include "fmt/core.h"
 #include "include/Lexer/Lexer.hpp"
 
+#include <vector>
+
+const std::vector<std::string> instructions = {
+  "ldi", 
+};
+
+const std::vector<std::string> registers = {
+  "r0", "r1"
+};
+
+#include <unordered_map>
+
+std::unordered_map<char, std::string> LiteralTokens = {
+  {'[', "Open brackets"},
+  {']', "Open brackets"},
+  {'+', "Plus sign"},
+  {'-', "Minus sign"},
+  {',', "Comma"},
+};
+
 namespace Lunasm {
 
   Lexer::Lexer(const std::string& source_code)
@@ -59,8 +79,17 @@ namespace Lunasm {
 
         std::size_t end = m_index - start;
         std::string_view text(m_source_code.c_str() + start, end);
+        
+        std::string kind;
+        for (const auto &inst : instructions)
+          if (inst == text)
+           kind = "instruction"; 
 
-        auto token = fmt::format("kind: instruction, line: {} col: {} text: {}", m_line, m_index, text);
+        for (const auto &reg : registers)
+          if (reg == text)
+            kind = "register";
+        
+        auto token = fmt::format("kind: {}, line: {} col: {} text: {}", kind, m_line, m_index, text);
         fmt::print("Token {{ {} }}\n", token);
       }
 
@@ -72,38 +101,6 @@ namespace Lunasm {
         skip();
       }
       
-      else if (current_char() == ',')
-      {
-        step();
-
-        auto token = fmt::format("kind: punctuation, line: {} col: {} text: ,", m_line, m_index);
-        fmt::print("Token {{ {} }}\n", token);
-      }
-
-      else if (current_char() == '[')
-      {
-        step();
-
-        auto token = fmt::format("kind: punctuation, line: {} col: {} text: [", m_line, m_index);
-        fmt::print("Token {{ {} }}\n", token);
-      }
-
-      else if (current_char() == ']')
-      {
-        step();
-
-        auto token = fmt::format("kind: punctuation, line: {} col: {} text: ]", m_line, m_index);
-        fmt::print("Token {{ {} }}\n", token);
-      }
-
-      else if (current_char() == '+')
-      {
-        step();
-
-        auto token = fmt::format("kind: operation, line: {} col: {} text: +", m_line, m_index);
-        fmt::print("Token {{ {} }}\n", token);
-      }
-
       else if (current_char() == '$')
       {
         if (!std::isxdigit(peek().value()))
@@ -119,6 +116,15 @@ namespace Lunasm {
         std::string_view text(m_source_code.c_str() + start, end);
 
         auto token = fmt::format("kind: immediate, line: {} col: {} text: {}", m_line, m_index, text);
+        fmt::print("Token {{ {} }}\n", token);
+      }
+
+      else if (LiteralTokens.find(current_char()) != LiteralTokens.end())
+      {
+        auto text = LiteralTokens.at(current_char());
+        step();
+
+        auto token = fmt::format("kind: punctuation, line: {} col: {} text: {}", m_line, m_index, text);
         fmt::print("Token {{ {} }}\n", token);
       }
 
